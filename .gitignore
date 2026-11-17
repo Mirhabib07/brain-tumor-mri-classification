@@ -1,4 +1,14 @@
+# Virtual environment
 venv/
 .venv/
-__pycache__/
+
+# Dataset (too large for GitHub)
+dataset/
+
+# Trained model weights (optional, but good practice if too large)
+*.pt
 *.keras
+
+# Python cache
+__pycache__/
+*.pyc
