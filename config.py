@@ -26,13 +26,10 @@ CLASS_NAMES = ["glioma", "meningioma", "notumor", "pituitary"]
 NUM_CLASSES = len(CLASS_NAMES)
 
 # ---- Segmentation ----
-SEG_DIR = BASE_DIR / "seg_dataset"
-SEG_IMG_DIR = SEG_DIR / "images"
-SEG_MASK_DIR = SEG_DIR / "masks"
-
-SEG_MODEL_PATH = BASE_DIR / "unet.pth"
-SEG_PLOT_PATH = BASE_DIR / "seg_training_plot.png"
-
+SEG_DIR = BASE_DIR / "seg_dataset" / "data"
+SEG_MODEL_PATH = BASE_DIR / "models" / "unet.pth"
+SEG_PLOT_PATH = BASE_DIR / "results" / "seg_training_plot.png"
+SEG_PRED_PATH = BASE_DIR / "results" / "seg_prediction.png"
 SEG_IMG_SIZE = 128
 SEG_BATCH_SIZE = 16
 SEG_EPOCHS = 30

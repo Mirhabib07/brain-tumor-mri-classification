@@ -36,3 +36,38 @@ class UNet(nn.Module):
         dec3=self.upconv3(bottleneck)
         dec3=torch.cat((dec3, enc3), dim=1)
         dec3=self.dec3(dec3)
+        dec2=self.upconv2(dec3)
+        dec2=torch.cat((dec2, enc2), dim=1)
+        dec2=self.dec2(dec2)
+        dec1=self.upconv1(dec2)
+        dec1=torch.cat((dec1, enc1), dim=1)
+        dec1=self.dec1(dec1)
+        out=self.out(dec1)
+        return out
+    
+
+def dice_loss(logits, target, eps=1.0):
+    p = torch.sigmoid(logits)
+    inter = (p * target).sum()
+    return 1 - (2 * inter + eps) / (p.sum() + target.sum() + eps)
+
+
+def bce_dice_loss(logits, target):
+    return F.binary_cross_entropy_with_logits(logits, target) + dice_loss(logits, target)
+
+
+@torch.no_grad()
+def dice_iou(logits, target, eps=1e-6):
+    pred = (torch.sigmoid(logits) > 0.5).float()
+    inter = (pred * target).sum(dim=(1, 2, 3))
+    p_sum = pred.sum(dim=(1, 2, 3))
+    t_sum = target.sum(dim=(1, 2, 3))
+    dice = (2 * inter + eps) / (p_sum + t_sum + eps)
+    iou = (inter + eps) / (p_sum + t_sum - inter + eps)
+    return dice.mean().item(), iou.mean().item()
+
+
+if __name__ == "__main__":
+    m = UNet()
+    print(m(torch.randn(2, 1, 128, 128)).shape)
+        
