@@ -1,9 +1,11 @@
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import torch
-from sklearn.metrics import classification_report, confusion_matrix
-from config import MODEL_PATH, CLASS_NAMES
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+from config import MODEL_PATH, CLASS_NAMES, CM_PATH
 from dataset import get_loaders
 from model import BrainCNN
-
 
 def evaluate_model():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -42,8 +44,14 @@ def evaluate_model():
     print(classification_report(all_labels, all_preds, target_names=CLASS_NAMES))
 
     # Confusion Matrix
+    cm = confusion_matrix(all_labels, all_preds)
     print("Confusion Matrix:")
-    print(confusion_matrix(all_labels, all_preds))
+    print(cm)
+
+    ConfusionMatrixDisplay(cm, display_labels=CLASS_NAMES).plot(cmap="Blues", xticks_rotation=30)
+    plt.tight_layout()
+    plt.savefig(CM_PATH, dpi=150)
+    print(f"Saved {CM_PATH.name}")
 
 
 if __name__ == "__main__":
